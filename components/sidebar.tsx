@@ -10,6 +10,7 @@ export default function Sidebar() {
           <div className="relative w-8 h-8 mr-4">
             <Image fill alt="logo" src={"/logo.png"} />
           </div>
+          <h1 className="font-bold text-2xl">AI Saas</h1>
         </Link>
       </div>
     </div>
