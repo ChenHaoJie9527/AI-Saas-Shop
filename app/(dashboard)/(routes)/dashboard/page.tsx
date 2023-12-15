@@ -1,6 +1,15 @@
-" use client";
+"use client";
 
-import { MessageSquare, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+import {
+  MessageSquare,
+  ArrowRight,
+  Music,
+  Image,
+  VideoIcon,
+  CodeIcon,
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -12,9 +21,38 @@ const tools = [
     bgColor: "bg-violet-500/10",
     href: "/conversation",
   },
+  {
+    label: "Music Generation",
+    icon: Music,
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-500/10",
+    href: "/music",
+  },
+  {
+    label: "Image Generation",
+    icon: Image,
+    color: "text-pink-500",
+    bgColor: "bg-pink-500/10",
+    href: "/image",
+  },
+  {
+    label: "Video Generation",
+    icon: VideoIcon,
+    color: "text-yellow-500",
+    bgColor: "bg-yellow-500/10",
+    href: "/video",
+  },
+  {
+    label: "Code Generation",
+    icon: CodeIcon,
+    href: "/code",
+    color: "text-blue-500",
+    bgColor: "bg-blue-500/10",
+  },
 ];
 
 export default function DashboardPage() {
+  const router = useRouter();
   return (
     <div>
       <div className="mb-8 space-y-4">
@@ -30,6 +68,7 @@ export default function DashboardPage() {
           <Card
             key={item.href}
             className="p-4 border-black/5 flex items-center justify-between hover:shadow-md transition cursor-pointer"
+            onClick={() => router.push(item.href)}
           >
             <div className="flex items-center gap-x-4">
               <div className={cn("p-2 w-fit rounded-md", item.bgColor)}>
