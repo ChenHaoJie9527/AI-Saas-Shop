@@ -3,13 +3,18 @@ import { Heading } from "@/components/Heading";
 import { MessageSquare } from "lucide-react";
 import * as z from "zod";
 import { formSchema } from "./constants";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl, FormField, FormItem, Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { useState } from "react";
 
 export default function ConversationPage() {
+  const router = useRouter();
+  const [messages, setMessages] = useState<any[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       prompt: "",
@@ -17,8 +22,26 @@ export default function ConversationPage() {
     resolver: zodResolver(formSchema),
   });
   const isLoading = form.formState.isSubmitting;
-  const onSubmit = async (vlaues: z.infer<typeof formSchema>) => {
-    console.log("values =>", vlaues);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const userMessages: any = {
+        role: "user",
+        content: values.prompt,
+      };
+      const newMessages = [...messages, userMessages];
+      const res = await axios.post("/api/conversation", {
+        messages: newMessages,
+      });
+
+      setMessages((currentParams) => {
+        return [...currentParams, userMessages, res.data];
+      });
+      form.reset();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      router.refresh();
+    }
   };
   return (
     <div>
@@ -61,7 +84,13 @@ export default function ConversationPage() {
             </form>
           </Form>
         </div>
-        <div className="space-y-4 mt-4">message content</div>
+        <div className="space-y-4 mt-4">
+          <div className="flex flex-col gap-y-4">
+            {messages.map((item) => {
+              return <div key={item.content}>{item.content}</div>;
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
